@@ -50,32 +50,47 @@ public class Instance {
 		this.features.remove(feature);
 	}
 	
-	public static List<Instance> indexInstances(File dataFile) {
+	public static List<Instance> indexInstances(InputStream inputStream) throws IOException {
 		List<Instance> instances = new ArrayList<Instance>();
 
 		// line formatted as: label feature1:value1 feature2:value2 ..."
-		try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String[] splitLine = line.split("\\s");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			String[] splitLine = line.split("\\s");
+			
+			String label = splitLine[0];
+			Instance instance = new Instance(label);
+			
+			for (int i = 1; i < splitLine.length; i++) {
+				String[] featureSplit = splitLine[i].split(":");
+				String feature = featureSplit[0];
 				
-				String label = splitLine[0];
-				Instance instance = new Instance(label);
+				Integer value = null;
 				
-				for (int i = 1; i < splitLine.length; i++) {
-					String[] featureSplit = splitLine[i].split(":");
-					String feature = featureSplit[0];
-					int value = Integer.parseInt(featureSplit[1]);							
-					instance.addFeature(feature, value);
+				try {
+					value = Integer.parseInt(featureSplit[1]);
+				} catch (NumberFormatException e) {
+					System.out.println("Error: cannot convert " + splitLine[i] + " value to integer.");
+					continue;
 				}
 				
-				instances.add(instance);
+				instance.addFeature(feature, value);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
+			
+			instances.add(instance);
 		}
+	
+		reader.close();
 		
 		return instances;
+		
+	}
+	
+	public static List<Instance> indexInstances(File dataFile) throws IOException {
+		InputStream inputStream = new FileInputStream(dataFile);
+		
+		return indexInstances(inputStream);
+
 	}
 }
