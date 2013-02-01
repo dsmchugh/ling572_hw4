@@ -27,16 +27,21 @@ public class Instance {
 		return this.features.containsKey(feature);
 	}
 	
-	public Integer getFeatureValue(String feature) {
-		return this.features.get(feature);
+	public int getFeatureValue(String feature) {
+		Integer value = this.features.get(feature);		
+		return value == null ? 0 : value;
 	}
 	
 	public Map<String,Integer> getFeatures() {
 		return this.features;
 	}
 	
-	public int getSize() {
+	public int getTotalFeatureCount() {
 		return this.size;
+	}
+	
+	public int getVocabularySize() {
+		return this.features.size();
 	}
 	
 	public void removeFeature(String feature) {
