@@ -4,12 +4,7 @@ import java.util.*;
 
 public class KnnModel {
 	int kVal;
-	
-	public enum SimilarityFunction {
-		Cosine, 
-		Euclidian;
-	}
-	
+		
 	public KnnModel(int kVal) {
 		this.setKVal(kVal);
 	}
@@ -18,8 +13,12 @@ public class KnnModel {
 		
 	}
 	
-	public void test(List<Instance> instances) {
-		
+	public void test(DistanceMetricMethod method, List<Instance> instances) {
+		//	loop through all instances and call getDistance.
+	}
+
+	public double getDistance(DistanceMetricMethod method, Instance lhs, Instance rhs) {
+		return method.distance(lhs, rhs);
 	}
 	
 	public int getKVal() {

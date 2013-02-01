@@ -7,7 +7,7 @@ public class KnnDriver {
 	private File trainingData;
 	private File testData;
 	private int kVal;
-	private SimilarityFunction similarityFunc;
+	private DistanceMetricMethod similarityFunc;
 	private File sysOutput;
 	
 	/**
@@ -51,10 +51,10 @@ public class KnnDriver {
 			int similarityFuncCode = Integer.parseInt(args[3]);
 			switch (similarityFuncCode) {
 				case 1:
-					this.similarityFunc = SimilarityFunction.Euclidian;
+					this.similarityFunc = new EuclideanDistanceMetric();
 					break; 
 				case 2:
-					this.similarityFunc = SimilarityFunction.Cosine;
+					this.similarityFunc = new CosineDistanceMetric();
 					break;
 				default:
 					throw new Exception();
