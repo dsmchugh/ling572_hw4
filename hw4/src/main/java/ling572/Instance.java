@@ -8,6 +8,14 @@ public class Instance {
 	private Map<String,Integer> features;
 	private int size;
 	
+	public Instance(String label, Map<String,Integer> buildFrom) {
+		this.features = new HashMap<String,Integer>();
+		for (String key : buildFrom.keySet()) {
+			this.features.put(key, buildFrom.get(key));
+		}
+		this.size = 0;
+	}
+	
 	public Instance(String label) {
 		this.label = label;
 		this.features = new HashMap<String,Integer>();
