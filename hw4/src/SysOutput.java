@@ -64,13 +64,10 @@ public class SysOutput implements AutoCloseable {
 		});
 			
 		map = new LinkedHashMap<T,Double>();
-			
-		int j=0;
 		
 		for(Iterator<Entry<T, Double>> i = list.iterator(); i.hasNext();) {			
 			Entry<T, Double> entry = i.next();
 			map.put(entry.getKey(), entry.getValue());
-			j++;
 		}
 	}
 }

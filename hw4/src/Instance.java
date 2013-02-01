@@ -1,16 +1,13 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
-public class Document {
+public class Instance {
 
 	private String label;
 	private Map<String,Integer> features;
 	private int size;
 	
-	public Document(String label) {
+	public Instance(String label) {
 		this.label = label;
 		this.features = new HashMap<String,Integer>();
 		this.size = 0;
@@ -47,8 +44,8 @@ public class Document {
 		this.features.remove(feature);
 	}
 	
-	public static List<Document> indexDocuments(File dataFile) {
-		List<Document> documents = new ArrayList<Document>();
+	public static List<Instance> indexInstances(File dataFile) {
+		List<Instance> instances = new ArrayList<Instance>();
 
 		// line formatted as: label feature1:value1 feature2:value2 ..."
 		try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
@@ -57,22 +54,22 @@ public class Document {
 				String[] splitLine = line.split("\\s");
 				
 				String label = splitLine[0];
-				Document document = new Document(label);
+				Instance instance = new Instance(label);
 				
 				for (int i = 1; i < splitLine.length; i++) {
 					String[] featureSplit = splitLine[i].split(":");
 					String feature = featureSplit[0];
 					int value = Integer.parseInt(featureSplit[1]);							
-					document.addFeature(feature, value);
+					instance.addFeature(feature, value);
 				}
 				
-				documents.add(document);
+				instances.add(instance);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 		
-		return documents;
+		return instances;
 	}
 }
