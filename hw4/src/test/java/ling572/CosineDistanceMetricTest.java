@@ -65,9 +65,9 @@ public class CosineDistanceMetricTest {
 	public void testNonIsolengthVectors() {
 		CosineDistanceMetric tester = new CosineDistanceMetric();
 		// |lhs| > |rhs|
-		assertEquals("Result", 0.677254, tester.distance(test4Instance, test5Instance), .000001);
+		assertEquals("Result", 0.321073, tester.distance(test4Instance, test5Instance), .000001);
 		// |lhs| < |rhs|
-		assertEquals("Result", 0.677254, tester.distance(test5Instance, test4Instance), .000001);
+		assertEquals("Result", 0.731058, tester.distance(test5Instance, test4Instance), .000001);
 	}
 	
 }
