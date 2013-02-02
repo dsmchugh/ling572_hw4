@@ -17,10 +17,12 @@ public class KnnModel {
 		this.trainInstances = trainInstances;
 	}
 	
-	public void test(DistanceMetricMethod method, List<Instance> testInstances, File sysOutputFile) throws IOException {
+	public void test(DistanceMetricMethod method, List<Instance> testInstances, File sysOutputFile, String dataType) throws IOException {
 		int i = 0;
-		int correctCount = 0;
+		Map<String, Frequency<String>> confusionMatrix = new HashMap<String, Frequency<String>>();
+		
 		SysOutput output = new SysOutput(sysOutputFile);
+		output.printHeader(dataType);
 		
 		for (Instance testInstance : testInstances) {
 			Map<Instance,Double> distances = new HashMap<Instance,Double>();
@@ -39,9 +41,7 @@ public class KnnModel {
 			for (Map.Entry<Instance,Double> neighbor : neighbors.entrySet()) {
 				classCounts.count(neighbor.getKey().getLabel());
 			}
-			
-			Map<String,Integer> sortedCounts = classCounts.getCountsSortedByValueDesc();
-			
+						
 			Map<String,Double> classProbabilities = new HashMap<String,Double>();
 			
 			for (String classLabel : classes) {
@@ -49,7 +49,7 @@ public class KnnModel {
 			}
 			
 			double highProb = 0;
-			boolean isCorrect = false;
+			String highProbLabel = "";
 			
 			for (Map.Entry<String,Integer> count : classCounts.getCounts().entrySet()) {
 				String classLabel = count.getKey();
@@ -60,22 +60,26 @@ public class KnnModel {
 				
 				if (probability >= highProb) {
 					highProb = probability;
-					isCorrect = classLabel.equals(testInstance.getLabel()) ? true : false;
+					highProbLabel = classLabel;
 				}
 			}
 			
 			output.printClassProbabilities(i, classProbabilities, testInstance.getLabel());			
 			
 			i++;
-			if (isCorrect)
-				correctCount++;
 			
+			Frequency<String> labelCounts = confusionMatrix.get(testInstance.getLabel());
+			if (labelCounts == null)
+				labelCounts = new Frequency<String>();
+			
+			labelCounts.count(highProbLabel);
+			
+			confusionMatrix.put(testInstance.getLabel(), labelCounts);
 		}
 		
 		output.close();
 		
-		//	temporary accuracy output
-		System.out.println("Accuracy: " + (double)correctCount/(double)i+1);
+		printConfusionMatrix(confusionMatrix, dataType);
 	}
 
 	private double getDistance(DistanceMetricMethod method, Instance lhs, Instance rhs) {
@@ -93,6 +97,52 @@ public class KnnModel {
 	public void setKVal(int kVal) {
 		this.kVal = kVal;
 	}
+	
+	private static void printConfusionMatrix(Map<String, Frequency<String>> confusionMatrix, String testType) {
+		int totalCount = 0;
+		int totalCorrect = 0;
+		
+		Map<String,Frequency<String>> sorted = new TreeMap<String, Frequency<String>>(confusionMatrix);
+		
+		System.out.println("Confusion matrix for the "+ testType + " data:");
+		System.out.println("row is the truth, column is the system output");
+		System.out.println();
+		
+		System.out.print("\t\t\t");
+		for (String label : sorted.keySet()) {
+			System.out.print(label + " ");
+		}
+		
+		System.out.println();
+		
+		
+		
+		for (String goldLabel : sorted.keySet()) {
+			System.out.print(goldLabel + " ");
+			Frequency<String> counts = confusionMatrix.get(goldLabel);
+			
+			for (String classLabel : sorted.keySet()) {
+				Integer count = counts.getCounts().get(classLabel);
+				
+				if (count == null)
+					count = 0;
+				
+				System.out.print(count + " ");
+				totalCount += count;
+				
+				if (goldLabel.equals(classLabel))
+					totalCorrect += count;
+			}
+			
+			System.out.println();
+		}
+		
+		System.out.println(" " + testType + " accuracy=" + (double)totalCorrect/(double)totalCount);
+		System.out.println();
+		System.out.println();
+		System.out.println();
+	}
+
 	
 	public static <T> Map<T,Double> getHighestValues(Map<T,Double> distances, int n, final boolean descending) {
 		List<Entry<T,Double>> list = new LinkedList<Entry<T,Double>>(distances.entrySet());

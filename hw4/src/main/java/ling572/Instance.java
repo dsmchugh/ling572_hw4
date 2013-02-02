@@ -81,6 +81,9 @@ public class Instance {
 				} catch (NumberFormatException e) {
 					System.out.println("Error: cannot convert " + splitLine[i] + " value to integer.");
 					continue;
+				} catch (ArrayIndexOutOfBoundsException e) {
+					//	ignore. extra space in file
+					continue;
 				}
 				
 				instance.addFeature(feature, value);

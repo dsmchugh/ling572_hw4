@@ -21,14 +21,14 @@ public class KnnDriver {
 		KnnDriver driver = new KnnDriver();
 		driver.parseArgs(args);
 		
-		
 		try {
 			List<Instance> trainInstances = Instance.indexInstances(driver.trainingData);
 			List<Instance> testInstances = Instance.indexInstances(driver.testData);
 			
 			KnnModel model = new KnnModel(driver.kVal);
 			model.train(trainInstances);
-			model.test(driver.similarityFunc, trainInstances, driver.sysOutput);
+			model.test(driver.similarityFunc, trainInstances, driver.sysOutput, "training");
+			model.test(driver.similarityFunc, testInstances, driver.sysOutput, "test");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -84,7 +84,7 @@ public class KnnDriver {
 		}
 
 	}
-	
+
 	private static void exit(String errorText) {
 		System.out.println(errorText);
 		System.exit(1);

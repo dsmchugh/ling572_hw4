@@ -9,7 +9,7 @@ public class SysOutput implements AutoCloseable {
 	private BufferedWriter writer;
 	
 	public SysOutput(File sysOutputFile) throws IOException {
-		this.writer = new BufferedWriter(new FileWriter(sysOutputFile));
+		this.writer = new BufferedWriter(new FileWriter(sysOutputFile, true));
 	}
 	
 	public void printHeader(String dataType) throws IOException {
@@ -42,6 +42,7 @@ public class SysOutput implements AutoCloseable {
 	}
 	
 	public void close() throws IOException {
+		this.newDataType();
 		this.writer.close();
 	}
 	
