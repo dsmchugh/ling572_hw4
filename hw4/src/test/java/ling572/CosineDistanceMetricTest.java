@@ -58,7 +58,6 @@ public class CosineDistanceMetricTest {
 		assertEquals("Result", 0.896458305, tester.distance(testInstance, test2Instance), .0000000001);
 		assertNotSame("Result", 1, tester.distance(testInstance, test2Instance));
 		assertTrue(tester.distance(testInstance,test2Instance) < tester.distance(testInstance, test3Instance));
-		assertEquals("Result", tester.distance(testInstance, test2Instance), -tester.distance(testInstance, test4Instance), 0000001); 
 	}
 	
 	@Test

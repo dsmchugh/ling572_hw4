@@ -26,4 +26,9 @@ public class CosineDistanceMetric implements DistanceMetricMethod {
 		return distance;
 	}
 
+	@Override
+	public Map<Instance, Double> nearest(Map<Instance, Double> distances, int kVal) {
+		return KnnModel.getHighestValues(distances, kVal, true);
+	}
+
 }

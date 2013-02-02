@@ -1,5 +1,6 @@
 package ling572;
 
+import java.util.Map;
 import java.util.Set;
 
 public class EuclideanDistanceMetric implements DistanceMetricMethod {
@@ -21,4 +22,8 @@ public class EuclideanDistanceMetric implements DistanceMetricMethod {
 
 	}
 
+	@Override
+	public Map<Instance, Double> nearest(Map<Instance, Double> distances, int kVal) {
+		return KnnModel.getHighestValues(distances, kVal, false);
+	}
 }

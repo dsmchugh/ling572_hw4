@@ -1,4 +1,5 @@
 package ling572;
+
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -7,8 +8,8 @@ public class SysOutput implements AutoCloseable {
 	private static final String SEPARATOR = " ";
 	private BufferedWriter writer;
 	
-	public SysOutput(String sysOutputFileName) throws IOException {
-		this.writer = new BufferedWriter(new FileWriter(sysOutputFileName));
+	public SysOutput(File sysOutputFile) throws IOException {
+		this.writer = new BufferedWriter(new FileWriter(sysOutputFile));
 	}
 	
 	public void printHeader(String dataType) throws IOException {
@@ -18,16 +19,19 @@ public class SysOutput implements AutoCloseable {
 		writer.newLine();
 	}
 	
-	public void printClassProbabilities(int index, Map<String,Double> classProbabilities) throws IOException {
+	public void printClassProbabilities(int index, Map<String,Double> classProbabilities, String goldLabel) throws IOException {
 		writer.write("array:");
 		writer.write(Integer.toString(index));
 		writer.write(SEPARATOR);
+		writer.write(goldLabel);
+		writer.write(SEPARATOR);
 		
-		sortMapByValueDesc(classProbabilities);
+		Map<String,Double> sortedProbabilities = sortMapByValueDesc(classProbabilities);
 		
-		for(Map.Entry<String,Double> entry: classProbabilities.entrySet()) {
+		for(Map.Entry<String,Double> entry: sortedProbabilities.entrySet()) {
 			this.printClassProbability(entry.getKey(), entry.getValue());
 		}
+		
 		writer.newLine();
 	}
 	
@@ -48,7 +52,7 @@ public class SysOutput implements AutoCloseable {
 		writer.write(SEPARATOR);
 	}
 	
-	private static <T> void sortMapByValueDesc(Map<T,Double> map) {
+	private static <T> Map<T,Double> sortMapByValueDesc(Map<T,Double> map) {
 		List<Entry<T,Double>> list = new LinkedList<Entry<T, Double>>(map.entrySet());
 		
 		Collections.sort(list, new Comparator<Entry<T,Double>>(){
@@ -64,11 +68,13 @@ public class SysOutput implements AutoCloseable {
 			}
 		});
 			
-		map = new LinkedHashMap<T,Double>();
+		Map<T,Double> sortedMap = new LinkedHashMap<T,Double>();
 		
 		for(Iterator<Entry<T, Double>> i = list.iterator(); i.hasNext();) {			
 			Entry<T, Double> entry = i.next();
-			map.put(entry.getKey(), entry.getValue());
+			sortedMap.put(entry.getKey(), entry.getValue());
 		}
+		
+		return sortedMap;
 	}
 }

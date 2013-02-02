@@ -1,7 +1,7 @@
 package ling572;
 
 import java.io.*;
-import ling572.KnnModel.*;
+import java.util.*;
 
 public class KnnDriver {
 	private File trainingData;
@@ -21,7 +21,18 @@ public class KnnDriver {
 		KnnDriver driver = new KnnDriver();
 		driver.parseArgs(args);
 		
-		KnnModel model = new KnnModel(driver.kVal);
+		
+		try {
+			List<Instance> trainInstances = Instance.indexInstances(driver.trainingData);
+			List<Instance> testInstances = Instance.indexInstances(driver.testData);
+			
+			KnnModel model = new KnnModel(driver.kVal);
+			model.train(trainInstances);
+			model.test(driver.similarityFunc, trainInstances, driver.sysOutput);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	private void parseArgs(String[] args) {
@@ -60,11 +71,14 @@ public class KnnDriver {
 					throw new Exception();
 			}
 		} catch (Exception e) {
-			exit("Error: invalid similarity_func value. 1 = Euclidian 2 = Cosine");
+			exit("Error: invalid similarity_func value. 1 = Euclidean 2 = Cosine");
 		}
 		
 		try {
 			this.sysOutput = new File(args[4]);
+
+			//	clear existing output data
+			sysOutput.delete();
 		} catch (Exception e) {
 			exit("Error: invalid sys_output file");
 		}
