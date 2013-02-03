@@ -9,6 +9,7 @@ public class KnnDriver {
 	private int kVal;
 	private DistanceMetricMethod similarityFunc;
 	private File sysOutput;
+	private File featureList;
 	
 	/**
 	 * training_data 
@@ -27,6 +28,7 @@ public class KnnDriver {
 			
 			KnnModel model = new KnnModel(driver.kVal);
 			model.train(trainInstances);
+			if (driver.featureList != null) model.filterByFeatureList(driver.featureList);
 			model.test(driver.similarityFunc, trainInstances, driver.sysOutput, "training");
 			model.test(driver.similarityFunc, testInstances, driver.sysOutput, "test");
 		} catch (IOException e) {
@@ -37,8 +39,8 @@ public class KnnDriver {
 	
 	private void parseArgs(String[] args) {
 
-		if (args.length != 5)
-			exit("Error: usage KnnDriver [training_data] [test_data] [k_val] [similarity_func] [sys_output]");
+		if (args.length < 5 || args.length > 6)
+			exit("Error: usage KnnDriver [training_data] [test_data] [k_val] [similarity_func] [sys_output] ([feature_list])");
 
 		try {
 			this.trainingData = new File(args[0]);
@@ -81,6 +83,14 @@ public class KnnDriver {
 			sysOutput.delete();
 		} catch (Exception e) {
 			exit("Error: invalid sys_output file");
+		}
+		
+		if (args.length == 6) {
+			try {
+				this.featureList = new File(args[5]);
+			} catch(Exception e) {
+				exit("Error: invalid feature_list file");
+			}
 		}
 
 	}

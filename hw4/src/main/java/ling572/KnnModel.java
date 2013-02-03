@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 public class KnnModel {
 	private int kVal;
 	private List<Instance> trainInstances;
-		
+	private Set<String> featureList = new HashSet<String>();	
 	
 	public KnnModel(int kVal) {
 		this.setKVal(kVal);
@@ -15,6 +15,35 @@ public class KnnModel {
 	
 	public void train(List<Instance> trainInstances) {
 		this.trainInstances = trainInstances;
+	}
+	
+	public void filterByFeatureList(File featureFile) {
+
+			// line formatted as: feature chi_square doc_count
+			BufferedReader reader;
+			try {
+				reader = new BufferedReader(new FileReader(featureFile));
+			
+				String line;
+				while ((line = reader.readLine()) != null) {
+					String[] splitLine = line.split("\\s");
+				
+					String feature = splitLine[0];
+					if (feature != null) {
+						featureList.add(feature);
+					}
+				} 
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}	
+			
+			for (String feature : featureList) {
+				for (Instance instance : trainInstances) {
+					if (instance.hasFeature(feature)) instance.removeFeature(feature);	
+				}
+			}
 	}
 	
 	public void test(DistanceMetricMethod method, List<Instance> testInstances, File sysOutputFile, String dataType) throws IOException {
