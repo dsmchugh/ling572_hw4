@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 public class KnnModel {
 	private int kVal;
 	private List<Instance> trainInstances;
-	private Set<String> featureList = new HashSet<String>();	
+	private Set<String> featureList = new HashSet<String>();
 	
 	public KnnModel(int kVal) {
 		this.setKVal(kVal);
@@ -24,7 +24,8 @@ public class KnnModel {
 	}
 	
 	public void filterByFeatureList(File featureFile) {
-		this.featureList = new HashSet<String>();
+			Set<String> removeList = new HashSet<String>();
+			removeList.addAll(featureList);
 		
 			// line formatted as: feature chi_square doc_count
 			BufferedReader reader;
@@ -37,22 +38,23 @@ public class KnnModel {
 				
 					String feature = splitLine[0];
 					if (feature != null) {
-						featureList.add(feature);
+						removeList.remove(feature);
 					}
 				} 
+				
 				reader.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
 			}	
 			
-			/*
-			for (String feature : featureList) {
+			this.featureList.removeAll(removeList);
+			
+			for (String feature : removeList) {
 				for (Instance instance : trainInstances) {
 					if (instance.hasFeature(feature)) instance.removeFeature(feature);	
 				}
 			}
-			*/
 	}
 	
 	public void test(DistanceMetricMethod method, List<Instance> testInstances, File sysOutputFile, String dataType) throws IOException {
@@ -66,7 +68,8 @@ public class KnnModel {
 			Set<String> classes = new HashSet<String>();
 			
 			for (Instance trainInstance : this.trainInstances) {
-				double distance = this.getDistance(method, trainInstance, testInstance);	
+				double distance = this.getDistance(method, trainInstance, testInstance);
+							
 				distances.put(trainInstance, distance);
 				classes.add(trainInstance.getLabel());
 			}

@@ -28,6 +28,9 @@ public class CosineDistanceMetric implements DistanceMetricMethod {
 		
 		double distance = (double)num / (Math.sqrt(lhsDen) * Math.sqrt(rhsDen));
 		
+		if (Double.isNaN(distance))
+			distance = 0;
+		
 		return distance;
 	}
 

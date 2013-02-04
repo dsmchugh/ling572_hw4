@@ -29,7 +29,6 @@ public class KnnDriver {
 			KnnModel model = new KnnModel(driver.kVal);
 			model.train(trainInstances);
 			if (driver.featureList != null) model.filterByFeatureList(driver.featureList);
-			model.test(driver.similarityFunc, trainInstances, driver.sysOutput, "training");
 			model.test(driver.similarityFunc, testInstances, driver.sysOutput, "test");
 		} catch (IOException e) {
 			e.printStackTrace();
