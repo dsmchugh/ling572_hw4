@@ -5,14 +5,19 @@ import java.util.*;
 public class CosineDistanceMetric implements DistanceMetricMethod {
 
 	@Override
-	public double distance(Instance lhs, Instance rhs) {
+	public double distance(Instance lhs, Instance rhs, Set<String> featureList) {
 		int num = 0;
 		int lhsDen = 0;
 		int rhsDen = 0;
 		
-		Set<String> featureList = lhs.getFeatures().keySet();
+		Set<String> lrUnion = new HashSet<String>();
+		lrUnion.addAll(lhs.getFeatures().keySet());
+		lrUnion.addAll(rhs.getFeatures().keySet());
 		
-		for (String feature : featureList) {
+		for (String feature : lrUnion) {
+			if (!featureList.contains(feature))
+				continue;
+			
 			int lhsVal = lhs.getFeatureValue(feature);
 			int rhsVal = rhs.getFeatureValue(feature);
 			

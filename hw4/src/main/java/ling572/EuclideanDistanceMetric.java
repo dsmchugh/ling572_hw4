@@ -1,17 +1,21 @@
 package ling572;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EuclideanDistanceMetric implements DistanceMetricMethod {
 
 	@Override
-	public double distance(Instance lhs, Instance rhs) {
+	public double distance(Instance lhs, Instance rhs, Set<String> featureList) {
 		double sum = 0.0;
 		
-		Set<String> featureList = lhs.getFeatures().keySet();
+		Set<String> lrUnion = new HashSet<String>();
+		lrUnion.addAll(lhs.getFeatures().keySet());
+		lrUnion.addAll(rhs.getFeatures().keySet());
 		
-		for (String feature : featureList) {
+		for (String feature : lrUnion) {
+			if (!featureList.contains(feature))
+				continue;
+			
 			int lhsVal = lhs.getFeatureValue(feature);
 			int rhsVal = rhs.getFeatureValue(feature);
 			

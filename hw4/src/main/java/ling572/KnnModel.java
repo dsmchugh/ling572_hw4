@@ -15,10 +15,17 @@ public class KnnModel {
 	
 	public void train(List<Instance> trainInstances) {
 		this.trainInstances = trainInstances;
+		
+		for (Instance instance : trainInstances) {
+			for (String feature : instance.getFeatures().keySet()) {
+				this.featureList.add(feature);
+			}
+		}
 	}
 	
 	public void filterByFeatureList(File featureFile) {
-
+		this.featureList = new HashSet<String>();
+		
 			// line formatted as: feature chi_square doc_count
 			BufferedReader reader;
 			try {
@@ -39,15 +46,16 @@ public class KnnModel {
 				System.exit(1);
 			}	
 			
+			/*
 			for (String feature : featureList) {
 				for (Instance instance : trainInstances) {
 					if (instance.hasFeature(feature)) instance.removeFeature(feature);	
 				}
 			}
+			*/
 	}
 	
 	public void test(DistanceMetricMethod method, List<Instance> testInstances, File sysOutputFile, String dataType) throws IOException {
-		int i = 0;
 		Map<String, Frequency<String>> confusionMatrix = new HashMap<String, Frequency<String>>();
 		
 		SysOutput output = new SysOutput(sysOutputFile);
@@ -70,7 +78,7 @@ public class KnnModel {
 			for (Map.Entry<Instance,Double> neighbor : neighbors.entrySet()) {
 				classCounts.count(neighbor.getKey().getLabel());
 			}
-						
+			
 			Map<String,Double> classProbabilities = new HashMap<String,Double>();
 			
 			for (String classLabel : classes) {
@@ -87,15 +95,13 @@ public class KnnModel {
 				double probability = (double)classCount/(double)this.kVal;
 				classProbabilities.put(classLabel,probability);
 				
-				if (probability >= highProb) {
+				if (probability > highProb || highProb == 0) {
 					highProb = probability;
-					highProbLabel = classLabel;
+					highProbLabel = classLabel; 
 				}
 			}
 			
-			output.printClassProbabilities(i, classProbabilities, testInstance.getLabel());			
-			
-			i++;
+			output.printClassProbabilities(testInstance.getId(), classProbabilities, testInstance.getLabel());			
 			
 			Frequency<String> labelCounts = confusionMatrix.get(testInstance.getLabel());
 			if (labelCounts == null)
@@ -112,7 +118,7 @@ public class KnnModel {
 	}
 
 	private double getDistance(DistanceMetricMethod method, Instance lhs, Instance rhs) {
-		return method.distance(lhs, rhs);
+		return method.distance(lhs, rhs, this.featureList);
 	}
 	
 	private Map<Instance,Double> getNearest(DistanceMetricMethod method, Map<Instance,Double> distances) {
@@ -144,8 +150,6 @@ public class KnnModel {
 		
 		System.out.println();
 		
-		
-		
 		for (String goldLabel : sorted.keySet()) {
 			System.out.print(goldLabel + " ");
 			Frequency<String> counts = confusionMatrix.get(goldLabel);
@@ -171,7 +175,6 @@ public class KnnModel {
 		System.out.println();
 		System.out.println();
 	}
-
 	
 	public static <T> Map<T,Double> getHighestValues(Map<T,Double> distances, int n, final boolean descending) {
 		List<Entry<T,Double>> list = new LinkedList<Entry<T,Double>>(distances.entrySet());
@@ -184,8 +187,9 @@ public class KnnModel {
 				if (descending)
 					c = -c;
 				
-				if (c==0)
+				if (c==0) {
 					c=(x.getKey().toString()).compareTo(y.getKey().toString());
+				}
 				
 				return c;
 			}
@@ -206,4 +210,4 @@ public class KnnModel {
 		
 		return sortedTypes;
 	}
-}
+}	

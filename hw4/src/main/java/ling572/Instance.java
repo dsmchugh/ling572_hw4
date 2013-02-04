@@ -7,6 +7,7 @@ public class Instance {
 	private String label;
 	private Map<String,Integer> features;
 	private int size;
+	private int id;
 	
 	public Instance(String label, Map<String,Integer> buildFrom) {
 		this.features = new HashMap<String,Integer>();
@@ -16,15 +17,20 @@ public class Instance {
 		this.size = 0;
 	}
 	
-	public Instance(String label) {
+	public Instance(String label, int id) {
 		this.label = label;
 		this.features = new HashMap<String,Integer>();
 		this.size = 0;
+		this.id = id;
 	}
 	
 	public void addFeature(String feature, int value) {
 		this.features.put(feature, value);
 		this.size += value;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	public String getLabel() {
@@ -61,6 +67,8 @@ public class Instance {
 	public static List<Instance> indexInstances(InputStream inputStream) throws IOException {
 		List<Instance> instances = new ArrayList<Instance>();
 
+		int j = 0;
+		
 		// line formatted as: label feature1:value1 feature2:value2 ..."
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
@@ -68,7 +76,7 @@ public class Instance {
 			String[] splitLine = line.split("\\s");
 			
 			String label = splitLine[0];
-			Instance instance = new Instance(label);
+			Instance instance = new Instance(label, j);
 			
 			for (int i = 1; i < splitLine.length; i++) {
 				String[] featureSplit = splitLine[i].split(":");
@@ -90,6 +98,7 @@ public class Instance {
 			}
 			
 			instances.add(instance);
+			j++;
 		}
 	
 		reader.close();
@@ -98,10 +107,13 @@ public class Instance {
 		
 	}
 	
+	public String toString() {
+		return Integer.toString(this.getId());
+	}
+	
 	public static List<Instance> indexInstances(File dataFile) throws IOException {
 		InputStream inputStream = new FileInputStream(dataFile);
 		
 		return indexInstances(inputStream);
-
 	}
 }

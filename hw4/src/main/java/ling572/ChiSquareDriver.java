@@ -2,7 +2,7 @@ package ling572;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class ChiSquareDriver {
 
@@ -14,7 +14,6 @@ public class ChiSquareDriver {
 	public static void main(String[] args) {
 		ChiSquareDriver driver = new ChiSquareDriver();
 		driver.parseArgs(args);
-		
 		
 		try {
 			List<Instance> trainInstances = Instance.indexInstances(driver.trainingData);
