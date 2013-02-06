@@ -126,12 +126,12 @@ $k=10$, and the cosine function are shown below:
 \begin{tabular}{@{}rr@{}}
 \toprule
 $p_0$ & Test accuracy \\ \midrule
-baseline & 0.823333 \\
-0.001    & 0.846667 \\
-0.01     & 0.856667 \\
-0.025    & 0.840000 \\
-0.05     & 0.853333 \\
-0.1      & 0.836667 \\
+baseline & 0.816667 \\
+0.001    & 0.903333 \\
+0.01     & 0.866667 \\
+0.025    & 0.870000 \\
+0.05     & 0.866667 \\
+0.1      & 0.856667 \\
 \bottomrule
 \end{tabular}
 \caption{(Q6) Test accuracy using {\bf binary} features, {\bf $k=10$},
@@ -140,7 +140,12 @@ cosine function}
 
 \section{Question 7}
 
-These results show that the kNN algorithm is quite sensitive to the
+We see from these experiments that using binary instead of real-valued
+features significantly improves accuracy. This is because it reduces the
+available range of similarity for each feature, and so sharpens the differences
+between classes.
+
+These results also show that the kNN algorithm is quite sensitive to the
 tuning parameters. In particular, the $k$ value chosen has a significant
 impact on accuracy. Because kNN doesn't attempt to separate class clusters,
 it assumes that the local neighborhood of each vector
