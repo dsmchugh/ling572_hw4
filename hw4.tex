@@ -1,0 +1,164 @@
+%%!TEX TS-program = xelatexmk
+\documentclass[oneside,justified,marginals=raggedouter]{tufte-handout}
+\usepackage{fontspec,xltxtra,xunicode}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{plotmarks}
+
+\defaultfontfeatures{Mapping=tex-text}
+\setmainfont[%Mapping=tex-text,
+  BoldFont={Haarlemmer MT Std Bold},
+  SlantedFont={Haarlemmer MT Std Italic},
+  ItalicFont={Haarlemmer MT Std Italic},
+  BoldItalicFont={Haarlemmer MT Std Bold Italic},
+  SmallCapsFont={Haarlemmer MT Std: +smcp}
+]{Haarlemmer MT Std}
+\setsansfont[Scale=MatchLowercase,Mapping=tex-text]{TeX Gyre Heros}
+\setmonofont[Scale=MatchLowercase]{TeX Gyre Cursor}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% XeTeX workaround for tufte-latex (otherwise need to use xetex or nols options)
+\renewcommand{\allcapsspacing}[1]{{\addfontfeature{LetterSpace=20.0}#1}}
+\renewcommand{\smallcapsspacing}[1]{{\addfontfeature{LetterSpace=5.0}#1}}
+\renewcommand{\textsc}[1]{\smallcapsspacing{\textsmallcaps{#1}}}
+\renewcommand{\smallcaps}[1]{\smallcapsspacing{\scshape\MakeTextLowercase{#1}}}
+
+\widowpenalty=1000
+\clubpenalty=1000
+\raggedbottom
+\hyphenpenalty=5000
+\tolerance=1000
+
+\title{LING 572 Homework 4}
+\author{David McHugh and Chris Curtis}
+\date{5 Feb 2013}
+
+\clearpage\relax
+
+\begin{document}
+\maketitle
+
+
+\section{Question 1}
+
+The script for this question, \texttt{build\_kNN.sh}, is located in the
+directory \texttt{scripts/}. The source code is in \texttt{src/}, and the
+compiled class files are in \texttt{bin/}.
+
+\section{Question 2}
+
+The results of running \texttt{build\_kNN.sh} with the specified
+parameters are given below:
+
+\begin{table}[h]
+\begin{tabular}{@{}rrr@{}}
+\toprule
+k & Euclidean distance & Cosine function \\ \midrule
+1 & 0.620000 & 0.720000 \\
+5 & 0.636667 & 0.666667 \\
+10 & 0.656667 & 0.633333 \\
+\bottomrule
+\end{tabular}
+\caption{(Q2) Test accuracy using {\bf real-valued} features}
+\end{table}
+
+\section{Question 3}
+
+The results of running \texttt{build\_kNN.sh} with \texttt{train2.vectors.txt}
+and \texttt{test2.vectors.txt} (i.e. with binary features) are given below:
+
+\begin{table}[h]
+\begin{tabular}{@{}rrr@{}}
+\toprule
+k & Euclidean distance & Cosine function \\ \midrule
+1 & 0.630000 & 0.823333 \\
+5 & 0.553333 & 0.813333 \\
+10 & 0.546667 & 0.816667 \\
+\bottomrule
+\end{tabular}
+\caption{(Q3) Test accuracy using {\bf binary} features}
+\end{table}
+
+\section{Question 4}
+
+The script to generate the chi-square results,
+\texttt{rank\_feat\_by\_chi\_square}, is located in the \texttt{scripts/}
+directory.\footnote{As per the discussion on GoPost, our script takes
+the name of the input file as an argument (rather than reading stdin).}
+
+\section{Question 5}
+
+The effects of running the \texttt{build\_kNN.sh} script using
+features filtered by $\chi^2$ threshold\footnote{For
+this problem the script takes the filtered feature file as a sixth
+argument.} and using cosine simliarity are given below:
+
+
+\begin{table}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+$p_0$ & $\chi^2$ & Number of related features & Test accuracy \\ \midrule
+baseline &         & 32846 & 0.720000 \\
+0.001    & 13.816  & 3853  & 0.830000 \\
+0.01     & 9.210   & 5783  & 0.850000 \\
+0.025    & 7.378   & 8172  & 0.836667 \\
+0.05     & 5.991   & 12314 & 0.780000 \\
+0.1      & 4.605   & 13513 & 0.766667 \\
+\bottomrule
+\end{tabular}
+\caption{(Q5) Test accuracy using {\bf real-valued} features, {\bf $k=1$},
+cosine function}
+\end{table}
+
+
+\section{Question 6}
+
+The effects of running the same tests as in Q5 but with binary features,
+$k=10$, and the cosine function are shown below:
+
+\begin{table}
+\begin{tabular}{@{}rr@{}}
+\toprule
+$p_0$ & Test accuracy \\ \midrule
+baseline & 0.823333 \\
+0.001    & 0.846667 \\
+0.01     & 0.856667 \\
+0.025    & 0.840000 \\
+0.05     & 0.853333 \\
+0.1      & 0.836667 \\
+\bottomrule
+\end{tabular}
+\caption{(Q6) Test accuracy using {\bf binary} features, {\bf $k=10$},
+cosine function}
+\end{table}
+
+\section{Question 7}
+
+These results show that the kNN algorithm is quite sensitive to the
+tuning parameters. In particular, the $k$ value chosen has a significant
+impact on accuracy. Because kNN doesn't attempt to separate class clusters,
+it assumes that the local neighborhood of each vector
+represents a natural grouping based on the relative
+similarity of features. However, there is no guarantee that the $k$ closest
+training vectors belong to the same class. Thus, if a test vector (projected
+into the training vector space) lies on the edge of a class boundary, the
+$k$ nearest neighbors could all belong to an incorrect class. We see this
+effect at work, where the accuracy decreases with increasing $k$.
+
+For the same reasons, and to an even greater extent, kNN is extremely
+sensitive to feature selection. Features that lack discriminatory power
+serve to artificially increase the measured similarity (in feature space) and
+so decrease the probability of any given neighborhood being comprised of
+true class members. We see this confirmed in the $\chi^2$ testing, where
+filtering features below even a moderate significance threshold ($p=0.1$)
+increases accuracy by over 3\%, and a stricter significance threshold ($p=0.01$)
+by nearly 14\%. (It is also worth noting that further reducing the significance
+threshold begins to reduce accuracy again, as features begin to be filtered
+out that, although vanishingly likely to be significant by chance, are in fact
+significant.\footnote{Sometimes you do roll the hard six.})
+
+\end{document}
