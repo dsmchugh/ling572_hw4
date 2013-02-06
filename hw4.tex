@@ -45,13 +45,13 @@
 
 \section{Question 1}
 
-The script for this question, \texttt{build\_kNN.sh}, is located in the
-directory \texttt{scripts/}. The source code is in \texttt{src/}, and the
-compiled class files are in \texttt{bin/}.
+The script for this question, \texttt{\small build\_kNN.sh}, is located in the
+directory \texttt{\small scripts/}. The source code is in \texttt{\small src/}, and the
+compiled class files are in \texttt{\small bin/}.
 
 \section{Question 2}
 
-The results of running \texttt{build\_kNN.sh} with the specified
+The results of running \texttt{\small build\_kNN.sh} with the specified
 parameters are given below:
 
 \begin{table}[h]
@@ -68,8 +68,8 @@ k & Euclidean distance & Cosine function \\ \midrule
 
 \section{Question 3}
 
-The results of running \texttt{build\_kNN.sh} with \texttt{train2.vectors.txt}
-and \texttt{test2.vectors.txt} (i.e. with binary features) are given below:
+The results of running \texttt{\small build\_kNN.sh} with \texttt{\small train2.vectors.txt}
+and \texttt{\small test2.vectors.txt} (i.e. with binary features) are given below:
 
 \begin{table}[h]
 \begin{tabular}{@{}rrr@{}}
@@ -86,13 +86,14 @@ k & Euclidean distance & Cosine function \\ \midrule
 \section{Question 4}
 
 The script to generate the chi-square results,
-\texttt{rank\_feat\_by\_chi\_square}, is located in the \texttt{scripts/}
+\texttt{\small rank\_feat\_by\_chi\_square.sh}, is located in the \texttt{\small scripts/}
 directory.\footnote{As per the discussion on GoPost, our script takes
 the name of the input file as an argument (rather than reading stdin).}
 
 \section{Question 5}
 
-The effects of running the \texttt{build\_kNN.sh} script using
+The script used to filter the feature list (output of Q4) is \texttt{\small filter\_feat\_list.sh}, located in the
+\texttt{\small scripts/} directory. The effects of running the \texttt{\small build\_kNN.sh} script using
 features filtered by $\chi^2$ threshold\footnote{For
 this problem the script takes the filtered feature file as a sixth
 argument.} and using cosine simliarity are given below:
