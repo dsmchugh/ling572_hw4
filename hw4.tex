@@ -160,10 +160,10 @@ For the same reasons, and to an even greater extent, kNN is extremely
 sensitive to feature selection. Features that lack discriminatory power
 serve to artificially increase the measured similarity (in feature space) and
 so decrease the probability of any given neighborhood being comprised of
-true class members. We see this confirmed in the $\chi^2$ testing, where
+true class members. We see this confirmed in the $\chi^2$ testing in Q5, where
 filtering features below even a moderate significance threshold ($p=0.1$)
-increases accuracy by over 3\%, and a stricter significance threshold ($p=0.01$)
-by nearly 14\%. (It is also worth noting that further reducing the significance
+increases accuracy from 0.72 to 0.766667, and a stricter significance threshold ($p=0.01$)
+increases it dramatically, to 0.85. (It is also worth noting that further reducing the significance
 threshold begins to reduce accuracy again, as features begin to be filtered
 out that, although vanishingly likely to be significant by chance, are in fact
 significant.\footnote{Sometimes you do roll the hard six.})
